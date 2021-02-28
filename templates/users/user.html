@@ -1,0 +1,84 @@
+{% extends "./layouts/default.html" %}
+
+{% block content %}
+<div class="container col-md-6">
+  <div class="row mt-4">
+    <h3 class="col-md-6">User List</h3>
+  </div>
+
+  <div class="table-responsive mt-4">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Users</th>
+        </tr>
+      </thead>
+      <tbody id="users-list">
+      </tbody>
+    </table>
+  </div>
+  {{ include('partials/ib_pagination.html') }}
+</div>
+
+
+<script>
+window.addEventListener('load', () => {
+  authCheck() && 
+  getUser();
+});
+
+
+/**
+ *  Get request. All users.
+ */
+const getUser = () => {
+  document.querySelector('#users-list').innerHTML = '';
+  axios.get("{{APP_SERVER_URL}}"+ '/users/{{ args.id }}', {
+    headers: {
+      'authorization' : localStorage.getItem('accessToken'),
+      'Content-Type': 'application/json'
+    }
+  })
+  .then(result => {
+    if (result.status >= 400) {
+    } else {
+      if (result.data) {
+        let user = result.data;
+        document.querySelector('#users-list').innerHTML += userLine(user);
+      } else {
+        $('#users-list').html(
+          "<tr><td>No user found.</td></tr>");
+      }
+      return false;
+    }
+  })
+  .catch(err => {
+    localStorage.removeItem('accessToken'); 
+    sessionStorage.setItem('Msg', err.response.data);
+    authCheck();
+  });
+}
+
+/**
+ *  Render one user in one table row
+ */
+const userLine = (user) => {
+  return(
+    `<tr id="${user.id}">
+      <td>`+ JSON.stringify(user)+ `</td>
+    </tr>`
+  );
+};
+
+/**
+ *  Clear alert box in modal
+ */
+const clearAlertMsg = () => {
+  $("#modal-msg")
+    .text('')
+    .removeClass('alert-warning')
+    .removeClass('alert-success');
+};
+</script>
+
+{% endblock %}

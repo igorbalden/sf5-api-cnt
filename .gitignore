@@ -1,0 +1,15 @@
+/vendor/
+/logs/*
+!/logs/README.md
+
+/coverage/
+*.php_cs.cache
+.vscode/
+.idea/
+/nbproject/
+/build/
+/cache/
+/.env*
+!/.env.example
+/.scannerwork/
+/.phpunit.result.cache
