@@ -77,7 +77,7 @@ function login() {
       let accessToken = result.data.Authorization.split(' ')['1'];
       localStorage.setItem('accessToken', accessToken);
       if (authCheck()) {
-        window.location = "http://localhost:8080/users";
+        window.location = "{{APP_URL}}"+ "/users";
       } else {
         errors = true;
       }
